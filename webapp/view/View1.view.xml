@@ -1,0 +1,55 @@
+<mvc:View controllerName="apppref.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m"
+    xmlns:t="sap.ui.table">
+    <Page id="page" title="{i18n>title}">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <HBox alignItems="Center">
+                    <Label text="{i18n>code}" showColon="true" />
+                    <Input id="code" value="{form>/code}" width="2em" class="sapUiTinyMarginBegin" />
+                    <Button text="{i18n>command}" press="onPressSearch" class="sapUiSmallMarginBegin" />
+                </HBox>
+                <HBox alignItems="Center">
+                    <Label text="{i18n>name}" showColon="true" />
+                    <Text id="name" text="{form>/name}" class="sapUiTinyMarginBegin" />
+                </HBox>
+                <HBox>
+                    <t:Table id="table" selectionMode="None" rows="{covid19>/}"
+                        visibleRowCount="5" ariaLabelledBy="title" width="15em">
+                        <t:extension>
+                            <OverflowToolbar style="Clear">
+                                <Title id="title" text="{i18n>covid19}"/>
+                            </OverflowToolbar>
+                        </t:extension>
+                        <t:columns>
+                            <t:Column id="date" sortProperty="date">
+                                <Label text="{i18n>date}" />
+                                <t:template>
+                                    <Text text="{covid19>date}" wrapping="false" />
+                                </t:template>
+                            </t:Column>
+                            <t:Column id="patients" hAlign="End" sortProperty="patients">
+                                <Label text="{i18n>patients}" />
+                                <t:template>
+                                    <Label text="{
+                                        path: 'covid19>patients',
+                                        type: 'sap.ui.model.type.Integer'
+                                    }" />
+                                </t:template>
+                            </t:Column>
+                        </t:columns>
+                        <t:footer>
+                            <OverflowToolbar id="infobar">
+                                <Label text="{i18n>count}" />
+                                <ToolbarSpacer />
+                                <Text id="count" />
+                                <Text text="{i18n>unit}" />
+                            </OverflowToolbar>
+                        </t:footer>
+                    </t:Table>
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

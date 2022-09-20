@@ -1,0 +1,94 @@
+_schema-version: "3.2"
+ID: apppref
+description: 都道府県の情報を表示する
+version: 0.0.1
+modules:
+- name: apppref-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: apppref-destination-service
+    parameters:
+      content-target: true
+  - name: apppref-repo-host
+    parameters:
+      service-key:
+        name: apppref-repo-host-key
+  - name: apppref-uaa
+    parameters:
+      service-key:
+        name: apppref-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: apppref_html_repo_host
+          ServiceInstanceName: apppref-html5-srv
+          ServiceKeyName: apppref-repo-host-key
+          sap.cloud.service: apppref
+        - Authentication: OAuth2UserTokenExchange
+          Name: apppref_uaa
+          ServiceInstanceName: apppref-xsuaa-srv
+          ServiceKeyName: apppref-uaa-key
+          sap.cloud.service: apppref
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: apppref-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: apppref-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - apppref.zip
+      name: apppref
+      target-path: resources/
+- name: apppref
+  type: html5
+  path: .
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: apppref-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: apppref-destination-service
+    service-plan: lite
+- name: apppref-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: apppref-xsuaa-srv
+    service-plan: application
+- name: apppref-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: apppref-html5-srv
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
