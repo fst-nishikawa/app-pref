@@ -32,7 +32,7 @@
                             <t:Column id="patients" hAlign="End" sortProperty="patients">
                                 <Label text="{i18n>patients}" />
                                 <t:template>
-                                    <Label text="{
+                                    <Text text="{
                                         path: 'covid19>patients',
                                         type: 'sap.ui.model.type.Integer'
                                     }" />
